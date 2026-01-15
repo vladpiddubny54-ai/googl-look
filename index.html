@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<title>Googl Look</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+    margin: 0;
+    background: #121212;
+    color: white;
+    font-family: Arial, sans-serif;
+}
+header {
+    padding: 20px;
+    text-align: center;
+    background: #1f1f1f;
+    font-size: 26px;
+}
+.upload {
+    margin: 20px auto;
+    padding: 20px;
+    max-width: 500px;
+    background: #1f1f1f;
+    border-radius: 10px;
+    text-align: center;
+}
+.gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 15px;
+    padding: 20px;
+}
+.card {
+    background: #1f1f1f;
+    padding: 10px;
+    border-radius: 10px;
+}
+.card img, .card video {
+    width: 100%;
+    border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<header>Googl Look</header>
+
+<div class="upload">
+    <h2>...</h2>
+    <p>Завантаж фото або відео</p>
+    <input type="file" id="fileInput" accept="image/*,video/*">
+</div>
+
+<div class="gallery" id="gallery"></div>
+
+<script>
+const input = document.getElementById("fileInput");
+const gallery = document.getElementById("gallery");
+let data = JSON.parse(localStorage.getItem("media")) || [];
+
+draw();
+
+input.addEventListener("change", () => {
+    const file = input.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+        data.push({ type: file.type, src: reader.result });
+        localStorage.setItem("media", JSON.stringify(data));
+        draw();
+    };
+    reader.readAsDataURL(file);
+});
+
+function draw() {
+    gallery.innerHTML = "";
+    data.forEach(item => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        if (item.type.startsWith("image")) {
+            const img = document.createElement("img");
+            img.src = item.src;
+            card.appendChild(img);
+        } else {
+            const video = document.createElement("video");
+            video.src = item.src;
+            video.controls = true;
+            card.appendChild(video);
+        }
+
+        gallery.appendChild(card);
+    });
+}
+</script>
+
+</body>
+</html>

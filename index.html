@@ -41,6 +41,19 @@ header {
     width: 100%;
     border-radius: 10px;
 }
+.delete-btn {
+    margin-top: 8px;
+    width: 100%;
+    padding: 8px;
+    background: #ff3b3b;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+}
+.delete-btn:hover {
+    background: #e12d2d;
+}
 </style>
 </head>
 
@@ -78,7 +91,8 @@ input.addEventListener("change", () => {
 
 function draw() {
     gallery.innerHTML = "";
-    data.forEach(item => {
+
+    data.forEach((item, index) => {
         const card = document.createElement("div");
         card.className = "card";
 
@@ -93,6 +107,18 @@ function draw() {
             card.appendChild(video);
         }
 
+        const delBtn = document.createElement("button");
+        delBtn.textContent = "Видалити";
+        delBtn.className = "delete-btn";
+        delBtn.onclick = () => {
+            if (confirm("Точно видалити?")) {
+                data.splice(index, 1);
+                localStorage.setItem("media", JSON.stringify(data));
+                draw();
+            }
+        };
+
+        card.appendChild(delBtn);
         gallery.appendChild(card);
     });
 }
